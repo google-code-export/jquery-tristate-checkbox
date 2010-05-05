@@ -33,9 +33,9 @@
 			var triState = {
 				init: function () {
 					// Add proxy checkbox for each heading
-					$(opts.heading, obj).before('<a href="#" class="checkbox">Heading</a>');
+					obj.find(opts.heading).before('<a href="#" class="checkbox">Heading</a>').wrap('<label></label>');
 					
-					var $inputs = $('input[type="checkbox"]', obj);
+					var $inputs = obj.find('input[type="checkbox"]');
 					for (var i=0, y=$inputs.length; i<y; i++) {
 						// hide the input fields
 						triState.hideInput($($inputs[i]));
@@ -45,7 +45,7 @@
 					triState.updateProxyStates();
 					
 					// Set click behavior on appropriate input fields
-					$('a.checkbox', obj).click(function (e) {
+					obj.find('a.checkbox, label').bind('click', function (e) {
 						e.preventDefault();
 						triState.initProxyClick($(this));
 					});
@@ -55,7 +55,7 @@
 					var $siblings = $el.parent('li').siblings().children('a.checkbox');
 					var iCheckCount = 0;
 					var $parentList = $el.parent('li').parent('ul');
-					var $descendantLists = $('ul', $parentList);
+					var $descendantLists = $parentList.find('ul');
 					var sResult;
 					
 					if (bChecked) { iCheckCount++; }
@@ -140,8 +140,8 @@
 				
 				setDescendants: function ($el, bChecked) {
 					var $parentItem = $el.parent('li');
-					var $descendantList = $('ul', $parentItem);
-					var $descendantInputs = $('a.checkbox', $parentItem);
+					var $descendantList = $parentItem.find('ul');
+					var $descendantInputs = $parentItem.find('a.checkbox');
 					
 					if (bChecked) {
 						for (var i=0, j=$descendantInputs.length; i<j; i++) {
