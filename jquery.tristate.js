@@ -82,9 +82,12 @@
 					
 					// Initialize the input field
 					($($el).hasClass(opts.checkedClass) === true || $($el).hasClass(opts.partialClass) === true) ? bChecked = true : bChecked = false ;
-					
+											
 					// Check for 'checked' siblings
 					triState.checkSiblings($el, bChecked);
+					
+					// Check/uncheck this elements associated label
+					triState.setLabel($el, bChecked);
 					
 					// Check/uncheck this elements descendants appropriately
 					triState.setDescendants($el, bChecked);
@@ -100,7 +103,7 @@
 					var $proxyLink;
 					for (var i=0, y=$inputs.length; i<y; i++) {
 						$proxyLink = $($inputs[i]).siblings('a.checkbox');
-						triState.setInputField($($proxyLink), 'checked');
+						triState.setInputField($proxyLink, 'checked');
 						triState.checkSiblings($($inputs[i]), true);
 						triState.setAncestors($($inputs[i]), true);
 					}
@@ -123,9 +126,11 @@
 					if (!$parentList.hasClass(opts.partialClass) && !$parentList.hasClass(opts.fullClass)) {
 						$ancestorInput.removeClass(opts.checkedClass +' '+ opts.partialClass);
 						triState.setInputField($ancestorInput, 'unchecked');
+						triState.setLabel($ancestorInput, bChecked);
 						bAncestorCheck = false;
 					} else {
 						triState.setInputField($ancestorInput, 'checked');
+						triState.setLabel($ancestorInput, bChecked);
 						if ($parentList.hasClass(opts.partialClass)) { $ancestorInput.removeClass(opts.checkedClass).addClass(opts.partialClass); }
 						if ($parentList.hasClass(opts.fullClass)) { $ancestorInput.removeClass(opts.partialClass).addClass(opts.checkedClass); }
 						bAncestorCheck = true;
@@ -146,11 +151,13 @@
 					if (bChecked) {
 						for (var i=0, j=$descendantInputs.length; i<j; i++) {
 							triState.setInputField($($descendantInputs[i]), 'checked');
+							triState.setLabel($($descendantInputs[i]), bChecked);
 						}
 						$descendantList.removeClass(opts.partialClass + ' ' + opts.fullClass).addClass(opts.fullClass);
 					} else {
 						for (var g=0, y=$descendantInputs.length; g<y; g++) {
 							triState.setInputField($($descendantInputs[g]), 'unchecked');
+							triState.setLabel($($descendantInputs[g]), bChecked);
 						}
 						$descendantList.removeClass(opts.partialClass + ' ' + opts.fullClass);
 					}
@@ -171,12 +178,25 @@
 					}
 				},
 				
+				setLabel: function ($el, state) {
+					$label = $el.siblings('label');
+					(state) ? triState.checkLabel($label) : triState.uncheckLabel($label);
+				},
+				
 				checkInput: function ($el) {
 					$el.removeClass(opts.partialClass).addClass(opts.checkedClass).siblings('input[name="'+$el.data('name')+'"]').attr('checked', 'checked');
 				},
 				
 				uncheckInput: function ($el) {
 					$el.removeClass(opts.checkedClass +' '+ opts.partialClass).siblings('input[name="'+$el.data('name')+'"]').attr('checked', '');
+				},
+				
+				checkLabel: function ($el) {
+					$el.removeClass(opts.partialClass).addClass(opts.checkedClass);
+				},
+				
+				uncheckLabel: function ($el) {
+					$el.removeClass(opts.checkedClass +' '+ opts.partialClass);
 				}
 			};
 			
